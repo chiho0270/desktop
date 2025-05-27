@@ -1,6 +1,6 @@
 import asyncio
 import hashlib
-from fastapi import FastAPI, HTTPException, Depends, Body, UploadFile, File, Form
+from fastapi import FastAPI, HTTPException, Depends, Body, UploadFile, File, Form, Query, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -256,3 +256,88 @@ def get_posts():
         raise HTTPException(status_code=500, detail="게시물 목록 조회 실패")
     close_connection(connection)
     return posts
+
+### 검색
+@app.get("/search/parts")
+def search_parts(query: str = Query(..., description="검색어")):
+    connection = create_connection()
+    if not connection:
+        raise HTTPException(status_code=500, detail="연결 실패")
+    cursor = connection.cursor(dictionary=True)
+    try:
+        sql = (
+            "SELECT product_id as id, part_type as type, model_name as name, manufacturer, price, launch_price "
+            "FROM parts "
+            "WHERE LOWER(model_name) LIKE %s OR LOWER(part_type) LIKE %s"
+        )
+        like_query = f"%{query.lower()}%"
+        cursor.execute(sql, (like_query, like_query))
+        results = cursor.fetchall()
+    except Exception as e:
+        print("Parts search error:", e)
+        close_connection(connection)
+        raise HTTPException(status_code=500, detail="검색 실패")
+    close_connection(connection)
+    return results
+
+### 위시리스트
+class AddWishlistRequest(BaseModel):
+    email: str
+    product_id: int
+
+@app.post("/wishlist/add", status_code=status.HTTP_201_CREATED)
+def add_to_wishlist(data: AddWishlistRequest):
+    connection = create_connection()
+    if not connection:
+        raise HTTPException(status_code=500, detail="연결 실패")
+    user = fetch_data_with_condition(connection, "users", "email", data.email)
+    if not user:
+        close_connection(connection)
+        raise HTTPException(status_code=404, detail="사용자를 찾을 수 없습니다.")
+    cursor = connection.cursor()
+    try:
+        # 중복 체크
+        cursor.execute("SELECT * FROM wishlist WHERE user_id=%s AND product_id=%s", (user["user_id"], data.product_id))
+        if cursor.fetchone():
+            close_connection(connection)
+            raise HTTPException(status_code=400, detail="이미 위시리스트에 추가된 부품입니다.")
+        cursor.execute(
+            "INSERT INTO wishlist (user_id, product_id, added_at) VALUES (%s, %s, NOW())",
+            (user["user_id"], data.product_id)
+        )
+        connection.commit()
+    except Exception as e:
+        print("Wishlist add error:", e)
+        close_connection(connection)
+        raise HTTPException(status_code=500, detail="위시리스트 추가 실패")
+    close_connection(connection)
+    return {"message": "위시리스트에 추가되었습니다."}
+
+@app.get("/wishlist/{email}")
+def get_wishlist(email: str):
+    connection = create_connection()
+    if not connection:
+        raise HTTPException(status_code=500, detail="연결 실패")
+    user = fetch_data_with_condition(connection, "users", "email", email)
+    if not user:
+        close_connection(connection)
+        raise HTTPException(status_code=404, detail="사용자를 찾을 수 없습니다.")
+    cursor = connection.cursor(dictionary=True)
+    try:
+        cursor.execute(
+            """
+            SELECT w.wishlist_id, p.product_id, p.part_type, p.model_name, p.manufacturer, p.price, w.added_at
+            FROM wishlist w
+            JOIN parts p ON w.product_id = p.product_id
+            WHERE w.user_id = %s
+            ORDER BY w.added_at DESC
+            """,
+            (user["user_id"],)
+        )
+        items = cursor.fetchall()
+    except Exception as e:
+        print("Wishlist fetch error:", e)
+        close_connection(connection)
+        raise HTTPException(status_code=500, detail="위시리스트 조회 실패")
+    close_connection(connection)
+    return items

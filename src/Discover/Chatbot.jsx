@@ -27,7 +27,7 @@ function ChatBot() {
     <div className="main-container" style={{ minWidth: 0, padding: 0 }}>
       <iframe
         title="Gradio Chatbot"
-        src="http://127.0.0.1:7860"
+        src="http://127.0.0.1:7860" // Gradio Chatbot URL
         width="100%"
         height="730px"
         style={{

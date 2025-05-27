@@ -9,54 +9,28 @@ function Search() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [hasSearched, setHasSearched] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  // 위시리스트 추가 상태
+  const [wishMsg, setWishMsg] = useState("");
 
-  // 샘플 데이터베이스 (실제 데이터로 교체 필요)
-  const partsDatabase = [
-  {
-    id: 1,
-    type: 'CPU',
-    name: 'AMD Ryzen 5 5600X',
-    specs: '6코어/12스레드, 기본 3.7GHz, 최대 4.6GHz, 65W',
-    price: '329,000원'
-  },
-  {
-    id: 2,
-    type: 'CPU',
-    name: 'NVIDIA GeForce RTX 3060 Ti',
-    specs: '8GB GDDR6, 1665MHz, 4864 CUDA 코어',
-    price: '679,000원'
-  },
-  {
-    id: 3,
-    type: 'CPU',
-    name: '삼성 DDR4-3200 16GB',
-    specs: 'DDR4, 3200MHz, CL22, 1.2V',
-    price: '76,500원'
-  },
-  {
-    id: 4,
-    type: 'CPU',
-    name: '삼성 980 PRO 1TB',
-    specs: 'PCIe 4.0 NVMe, 순차읽기 7,000MB/s, 순차쓰기 5,000MB/s',
-    price: '189,000원'
-  },
-  {
-    id: 5,
-    type: 'CPU',
-    name: '마이크로닉스 Classic II 600W',
-    specs: '80 PLUS 230V EU 표준, 140mm 팬',
-    price: '61,020원'
-  }
-];
-
-  const handleSearch = () => {
-    const query = searchQuery.toLowerCase();
-    const filtered = partsDatabase.filter(part => 
-      part.name.toLowerCase().includes(query) || 
-      part.type.toLowerCase().includes(query)
-    );
-    setSearchResults(filtered);
-    setHasSearched(true);
+  // DB에서 검색
+  const handleSearch = async () => {
+    if (!searchQuery.trim()) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(`http://localhost:8000/search/parts?query=${encodeURIComponent(searchQuery)}`);
+      if (!response.ok) throw new Error('검색 실패');
+      const data = await response.json();
+      setSearchResults(data);
+    } catch (err) {
+      setError('검색 중 오류가 발생했습니다.');
+      setSearchResults([]);
+    } finally {
+      setHasSearched(true);
+      setLoading(false);
+    }
   };
 
   const handleKeyPress = (e) => {
@@ -64,6 +38,31 @@ function Search() {
       e.preventDefault();
       handleSearch();
     }
+  };
+
+  // Wish 버튼 클릭 핸들러
+  const handleWish = async (part) => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user) {
+      setWishMsg("로그인이 필요합니다.");
+      return;
+    }
+    try {
+      const response = await fetch('http://localhost:8000/wishlist/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: user.email, product_id: part.id })
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        setWishMsg(data.detail || '추가 실패');
+      } else {
+        setWishMsg('위시리스트에 추가되었습니다!');
+      }
+    } catch (err) {
+      setWishMsg('네트워크 오류');
+    }
+    setTimeout(() => setWishMsg(""), 2000);
   };
 
   return (
@@ -82,6 +81,7 @@ function Search() {
                 if (value === '') {
                   setSearchResults([]);
                   setHasSearched(false);
+                  setError(null);
                 }
               }}
               onKeyPress={handleKeyPress}
@@ -98,7 +98,9 @@ function Search() {
         </div>
 
         {/* 검색 결과는 hasSearched가 true일 때만 표시 */}
-        {hasSearched && (
+        {loading && <div className="search-loading">검색 중...</div>}
+        {error && <div className="search-error">{error}</div>}
+        {hasSearched && !loading && !error && (
           <div className="search-results">
             {searchResults.length === 0 ? (
               <div className="no-results">
@@ -110,17 +112,19 @@ function Search() {
                   <div className="part-info">
                     <span className="part-type">{part.type}</span>
                     <h3 className="part-name">{part.name}</h3>
-                    <p className="part-specs">{part.specs}</p>
-                    <p className="part-price">{part.price}</p>
+                    <p className="part-specs">{part.manufacturer ? `제조사: ${part.manufacturer}` : ''}</p>
+                    <p className="part-price">{part.price ? `가격: ${part.price}원` : ''}</p>
                   </div>
                   <div className="part-actions">
-                    <Button variant="outline-success" size="sm">Wish</Button>
+                    <Button variant="outline-success" size="sm" onClick={() => handleWish(part)}>Wish</Button>
                   </div>
                 </div>
               ))
             )}
           </div>
         )}
+        {/* Wish 결과 메시지 */}
+        {wishMsg && <div className="wish-msg">{wishMsg}</div>}
       </div>
     </div>
   );
