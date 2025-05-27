@@ -1,25 +1,5 @@
 import gradio as gr
 
-custom_css = """
-/* 전체 컨테이너 설정 */
-.gradio-container { 
-    height: 100vh !important; 
-    max-width: 100% !important;
-}
-/* 상단 여백 줄이기 */
-.main { padding-top: 0 !important; }
-h3 { margin-top: 0 !important; margin-bottom: 5px !important; }
-
-/* 채팅창 크기 확장 - 계산식으로 최대 공간 활용 */
-#chatbot { 
-    flex-grow: 1 !important; 
-    height: calc(100vh - 112px - 16px) !important; 
-    min-height: 600px !important;
-    overflow: auto !important;
-}
-/* 푸터 제거 */
-footer {display: none !important;}
-"""
 
 # 챗봇 상태 관리용 함수
 def respond(message, history, state):
@@ -75,16 +55,15 @@ def respond(message, history, state):
     # fallback
     history[-1] = (message, "무슨 말씀이신지 잘 모르겠습니다. 다시 한번 말씀해주시겠어요? 😊")
     return "", history, state
-    
 
 # --- 그라디오 인터페이스 설정 부분 ---
-with gr.Blocks(theme=gr.themes.Soft(), css=custom_css, fill_height=True) as demo:
+with gr.Blocks(theme=gr.themes.Soft(), fill_height=True) as demo:
     gr.Markdown("""
     <h3 style='margin-bottom: 0;'>UPsetUP 챗봇</h3>
     """)
     chatbot = gr.Chatbot(
         elem_id="chatbot",         # 반드시 elem_id 지정!
-        height=None,               # height=None로 두어야 CSS 적용됨
+        height=600,               # height=None로 두어야 CSS 적용됨
         bubble_full_width=False,
         avatar_images=("https://cdn-icons-png.flaticon.com/512/1946/1946429.png", None), 
         show_copy_button=True

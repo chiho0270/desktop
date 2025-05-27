@@ -97,10 +97,10 @@
     right: 0;
     background: white;
     border-radius: 0 0 8px 8px;
-    max-height: 220px;
+    max-height: 610px;
     overflow-y: auto;
     z-index: 10;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgb(0, 0, 0);
 }
 /* ====== 결과 카드 공통 (Search, Comparison 등) ====== */
 .part-card {

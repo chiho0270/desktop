@@ -1,8 +1,14 @@
-.history-header {
+.history-header-row {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.history-title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: bold;
 }
 
 .clear-btn {
@@ -13,6 +19,7 @@
   padding: 8px 18px;
   font-size: 15px;
   cursor: pointer;
+  justify-content: flex-end;
 }
 
 .no-history {
@@ -34,9 +41,10 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-.estimate-header {
+.estimate-header-row {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 18px;
   align-items: center;
   margin-bottom: 20px;
   padding-bottom: 15px;

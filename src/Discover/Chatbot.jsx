@@ -27,10 +27,15 @@ function ChatBot() {
     <div className="main-container" style={{ minWidth: 0, padding: 0 }}>
       <iframe
         title="Gradio Chatbot"
-        src=""
+        src="http://127.0.0.1:7860"
         width="100%"
         height="730px"
-        style={{ border: 'none', width: '100%', height: '100%' }}
+        style={{
+          border: 'none',
+          width: '100%',
+          height: '730px',       // ★ style에도 height: 730px
+          minHeight: '730px'
+        }}
         allow="clipboard-write"
       />
     </div>

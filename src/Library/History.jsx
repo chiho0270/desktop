@@ -15,10 +15,17 @@ function History() {
     setEstimates([]);
   };
 
+  // 개별 견적 삭제 함수
+  const handleDeleteEstimate = (idxToDelete) => {
+    const newEstimates = estimates.filter((_, idx) => idx !== idxToDelete);
+    setEstimates(newEstimates);
+    localStorage.setItem('estimateHistory', JSON.stringify(newEstimates));
+  };
+
   return (
     <div className="main-container">
-      <div className="history-header">
-        <h2>생성된 견적 목록</h2>
+      <div className="history-header-row">
+        <h2 className="history-title">견적 History</h2>
         {estimates.length > 0 && (
           <button className="clear-btn" onClick={handleClear}>전체 삭제</button>
         )}
@@ -30,9 +37,17 @@ function History() {
         ) : (
           estimates.map((estimate, idx) => (
             <div key={idx} className="estimate-card">
-              <div className="estimate-header">
+              <div className="estimate-header-row">
                 <span className="timestamp">{new Date(estimate.timestamp).toLocaleString()}</span>
-                <span className="total-price">총 견적: {estimate.total.toLocaleString()}원</span>
+                <span className="total-price">총 가격: {estimate.total.toLocaleString()}원</span>
+                {/* 개별 삭제 버튼 */}
+                <button
+                  className="clear-btn"
+                  onClick={() => handleDeleteEstimate(idx)}
+                  style={{ marginLeft: 16 }}
+                >
+                  삭제
+                </button>
               </div>
               
               <div className="user-conditions">
