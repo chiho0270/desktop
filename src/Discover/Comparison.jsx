@@ -27,22 +27,20 @@ function Comparison() {
     return true;
   });
 
-  const handleSearch1 = (query) => {
-    setSearch1(query);
-    setResults1(
-      filteredDatabase.filter(part =>
-        part.name.toLowerCase().includes(query.toLowerCase())
-      )
-    );
+  // 드롭다운에서 선택 시 id로 해당 part 객체를 찾아서 저장
+  const handleSelect1 = (e) => {
+    const selected = filteredDatabase.find(part => part.id === Number(e.target.value));
+    setProduct1(selected || null);
+  };
+  const handleSelect2 = (e) => {
+    const selected = filteredDatabase.find(part => part.id === Number(e.target.value));
+    setProduct2(selected || null);
   };
 
-  const handleSearch2 = (query) => {
-    setSearch2(query);
-    setResults2(
-      filteredDatabase.filter(part =>
-        part.name.toLowerCase().includes(query.toLowerCase())
-      )
-    );
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    setProduct1(null);
+    setProduct2(null);
   };
 
   return (
@@ -50,93 +48,52 @@ function Comparison() {
       <div className="tab-toggle">
         <button
           className={`tab-button ${activeTab === 'cpu' ? 'active' : ''}`}
-          onClick={() => {
-            setActiveTab('cpu');
-            setProduct1(null);
-            setProduct2(null);
-          }}
+          onClick={() => handleTabChange('cpu')}
         >
           CPU
         </button>
         <button
           className={`tab-button ${activeTab === 'gpa' ? 'active' : ''}`}
-          onClick={() => {
-            setActiveTab('gpa');
-            setProduct1(null);
-            setProduct2(null);
-          }}
+          onClick={() => handleTabChange('gpa')}
         >
           GPU
         </button>
         <button
           className={`tab-button ${activeTab === 'ram' ? 'active' : ''}`}
-          onClick={() => {
-            setActiveTab('ram');
-            setProduct1(null);
-            setProduct2(null);
-          }}
+          onClick={() => handleTabChange('ram')}
         >
           RAM
         </button>
       </div>
 
       <div className="product-selectors">
-        <div className="search-box">
-          <input
-            type="search"
-            placeholder="제품 1 검색"
-            className="search-input"
-            value={product1 ? product1.name : search1}
-            onChange={e => handleSearch1(e.target.value)}
-            disabled={!!product1}
-          />
-          {!product1 && search1 && (
-            <div className="search-results">
-              {results1.map(part => (
-                <div
-                  key={part.id}
-                  className="part-card"
-                  onClick={() => setProduct1(part)}
-                >
-                  <div className="part-info">
-                    <span className="part-type">{part.type}</span>
-                    <h3 className="part-name">{part.name}</h3>
-                    <p className="part-specs">{Object.entries(part.specs).map(([k,v]) => `${k}: ${v}`).join(', ')}</p>
-                    <p className="part-price">{part.price}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+        <div className="dropdown-box">
+          <select
+            className="product-search-input"
+            value={product1 ? product1.id : ''}
+            onChange={handleSelect1}
+          >
+            <option value="">제품 1 선택</option>
+            {filteredDatabase.map(part => (
+              <option key={part.id} value={part.id}>
+                {part.name} ({part.price})
+              </option>
+            ))}
+          </select>
         </div>
-
-        <div className="search-box">
-          <input
-            type="search"
-            placeholder="제품 2 검색"
-            className="search-input"
-            value={product2 ? product2.name : search2}
-            onChange={e => handleSearch2(e.target.value)}
-            disabled={!!product2}
-          />
-          {!product2 && search2 && (
-            <div className="search-results">
-              {results2.map(part => (
-                <div
-                  key={part.id}
-                  className="part-card"
-                  onClick={() => setProduct2(part)}
-                >
-                  <div className="part-info">
-                    <span className="part-type">{part.type}</span>
-                    <h3 className="part-name">{part.name}</h3>
-                    <p className="part-specs">{Object.entries(part.specs).map(([k,v]) => `${k}: ${v}`).join(', ')}</p>
-                    <p className="part-price">{part.price}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+        <div className="dropdown-box">
+          <select
+            className="product-search-input"
+            value={product2 ? product2.id : ''}
+            onChange={handleSelect2}
+          >
+            <option value="">제품 2 선택</option>
+            {filteredDatabase.map(part => (
+              <option key={part.id} value={part.id}>
+                {part.name} ({part.price})
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
