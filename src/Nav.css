@@ -1,0 +1,45 @@
+.navbar {
+  position: fixed; 
+  top: 5px; /* 상단 여백 조정 */
+  height: 100%; /* 높이 조정 */
+  display: flex; 
+  flex-direction: column;
+  padding: 10px;
+  width: 18%; 
+  text-align: left;
+  border-right: 1px solid #ccc; /* 오른쪽 경계선 */
+}
+
+.navbar h4 {
+  margin-bottom: 12px; /* 제목 아래 여백 */
+}
+
+.navbarMenu {
+  padding: 10px; /* 링크 내부 여백 */
+  margin-bottom: 10px; /* 링크 간격 */
+  text-decoration: none; /* 밑줄 제거 */
+  color: #000; /* 링크 색상 */
+  font-size: 19px;
+  }   
+
+
+.navbarMenu:hover {
+  background-color: #d1cece; 
+}
+  
+.user-link {
+  font-size: 50px; /* User 아이콘 크기 조정 */
+}
+
+.nav-buttons {
+  display: flex;
+  gap: 8px; /* 버튼 간격을 줄임 */
+}
+.nav-button {
+  padding: 13px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+}

@@ -1,0 +1,108 @@
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.clear-btn {
+  background: #e44d26;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.no-history {
+  color: #aaa;
+  text-align: center;
+  padding: 40px 0;
+}
+
+/* 견적 카드 리스트 */
+.estimate-list {
+  display: grid;
+  gap: 20px;
+}
+
+.estimate-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 25px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.estimate-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.timestamp {
+  color: #666;
+  font-size: 14px;
+}
+
+.total-price {
+  font-weight: bold;
+  color: #c54b4b;
+  font-size: 18px;
+}
+
+.user-conditions {
+  margin-bottom: 25px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.user-conditions h4 {
+  margin: 0 0 10px 0;
+  color: #333;
+  font-size: 16px;
+}
+
+.user-conditions ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.user-conditions li {
+  padding: 5px 0;
+  color: #444;
+  font-size: 15px;
+}
+
+.parts-list h4 {
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 16px;
+}
+
+.parts-list table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.parts-list th,
+.parts-list td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  font-size: 15px;
+}
+
+.parts-list th {
+  background: #007bff;
+  color: white;
+}
+
+.parts-list tr:nth-child(even) {
+  background: #f8f9fa;
+}

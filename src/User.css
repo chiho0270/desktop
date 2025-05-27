@@ -1,0 +1,72 @@
+.user-page {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+}
+  
+.user-info-card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 30px 28px;
+    margin-top: 20px;
+    width: 100%;
+}
+  
+.user-info-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 18px;
+}
+  
+.user-label {
+    width: 90px;
+    font-weight: bold;
+    color: #333;
+    font-size: 16px;
+    margin-right: 10px;
+}
+  
+.user-value {
+    font-size: 16px;
+    color: #555;
+    flex: 1;
+}
+  
+.user-btn {
+    margin-left: 6px;
+    padding: 5px 15px;
+    background: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.user-btn:hover {
+    background: #0056b3;
+}
+  
+.user-input {
+    padding: 6px 10px;
+    font-size: 15px;
+    border: 1px solid #bbb;
+    border-radius: 6px;
+    margin-right: 10px;
+    flex: 1;
+}
+  
+.pw-form {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+  
+.pw-msg {
+    color: #e44d26;
+    font-size: 14px;
+    margin-top: 4px;
+}
+  

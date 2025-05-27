@@ -1,0 +1,42 @@
+/* 전체 화면을 차지하는 부모 컨테이너 */
+.auth-page {
+    display: flex;
+    justify-content: center; /* 가로 중앙 정렬 */
+    align-items: center; /* 세로 중앙 정렬 */
+    height: 100vh; /* 전체 화면 높이 */
+}
+  
+  /* 기존 auth-container 스타일 유지 및 조정 */
+.auth-container {
+    width: 500px; /* 너비 조정 */
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+}
+  
+.auth-form {
+    display: flex;
+    flex-direction: column;
+}
+  
+.auth-form input {
+    margin-bottom: 20px;
+    padding: 15px;
+    font-size: 18px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+  
+.auth-button {
+    padding: 15px;
+    font-size: 18px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+}
+  
+.auth-button:hover {
+    background-color: #0056b3;
+}

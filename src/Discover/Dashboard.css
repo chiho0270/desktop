@@ -1,0 +1,73 @@
+/* 헤더(제목+버튼) */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+/* 제목 왼쪽 */
+.header-left h2 {
+  font-size: 32px;
+  font-weight: bold;
+  margin: 0;
+}
+
+/* 글작성 버튼 오른쪽 */
+.header-right .write-button {
+  font-size: 15px;
+  padding: 6px 16px;
+  border-radius: 6px;
+  margin-left: 8px;
+}
+
+/* 게시글 리스트 */
+.post-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.post-item {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+}
+.post-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+
+.post-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.post-link h3 {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0 0 4px 0;
+}
+
+.post-link p {
+  font-size: 15px;
+  color: #444;
+  margin: 0;
+}
+
+/* 버튼 스타일 (Bootstrap 기본과 유사) */
+.write-button {
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 16px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.write-button:hover {
+  background: #0056b3;
+}

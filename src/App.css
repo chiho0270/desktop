@@ -1,0 +1,19 @@
+.header-and-nav {
+    display: flex; /* flexbox 사용 */
+    flex-direction: column; /* 세로로 배치 */
+    padding-right: 10px; /* 선과 내용 사이 여백 */
+    width: 18%; /* 너비 설정 */
+    max-height: 80vh;
+    max-width: 1000px;
+}
+  
+.content {
+    margin-left: 18%; /* 네비게이션 바 너비만큼 여백 */
+}
+.User {
+    position: fixed; /* 고정 위치 */
+    bottom: 0; /* 하단으로 고정 */
+    width: 100%; /* 너비 설정 */
+    background-color: #f1f1f1; /* 배경색 */
+    padding: 10px; /* 내부 여백 */
+  }

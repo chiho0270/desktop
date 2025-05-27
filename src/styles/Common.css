@@ -1,0 +1,144 @@
+/* main-container: Home, Dashboard, Comparison, History, Wishlist */
+.main-container {
+    position: relative;
+    padding: 15px;
+    max-width: 100%;
+    max-height: 80vh;
+    flex-direction: column; /* 세로로 배치 */
+    align-items: flex-start; /* 왼쪽 정렬 */
+    margin-left: calc(18%); /* 네비게이션 바 너비*/
+}
+  
+.tab-toggle {
+    /* Comaprison.css, Wishlist.css */
+    display: flex;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+  }
+/* tab-button: Comparison, Wishlist */
+.tab-button {
+    /* Comaprison.css, Wishlist.css */
+    display: inline-block;
+    padding: 10px 30px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    background-color: transparent;
+    color: #333;
+}
+.tab-button.active {
+    /* Comaprison.css, Wishlist.css */
+    background-color: #c54b4b;
+    color: white;
+    border-radius: 7px;
+}
+  
+/* product-selectors: Comparison */
+.product-selectors {
+    /* Comaprison.css */
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 30px 0;
+}
+  
+/* spec-table, spec-name: Comparison */
+.spec-table {
+    /* Comaprison.css */
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.spec-table th, .spec-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+.spec-table th {
+    background: #007bff;
+    color: white;
+}
+.spec-table tr:nth-child(even) {
+    background: #f8f9fa;
+}
+.spec-name {
+    /* Comaprison.css */
+    font-weight: bold;
+    color: #333;
+}
+  
+/* select-message: Comparison */
+.select-message {
+    /* Comaprison.css */
+    text-align: center;
+    color: #666;
+    margin-top: 40px;
+    font-size: 18px;
+}
+ 
+/* ====== 공통 검색 input (Search, Comparison 등) ====== */
+.search-input {
+    width: 100%;
+    padding: 15px;
+    font-size: 16px;
+    border: 2px solid #007bff;
+    border-radius: 8px;
+    background: white;
+    box-sizing: border-box;
+    outline: none;
+}
+  
+/* 자동완성/검색결과 공통 */
+.search-results {
+    position: absolute;
+    left: 0;
+    right: 0;
+    background: white;
+    border-radius: 0 0 8px 8px;
+    max-height: 220px;
+    overflow-y: auto;
+    z-index: 10;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+/* ====== 결과 카드 공통 (Search, Comparison 등) ====== */
+.part-card {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+    transition: background 0.2s;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.part-card:last-child {
+    border-bottom: none;
+}
+.part-card:hover {
+    background: #f0f8ff;
+}
+.part-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.part-type {
+    font-size: 13px;
+    color: #007bff;
+    font-weight: bold;
+}
+.part-name {
+    font-size: 17px;
+    margin: 0;
+}
+.part-specs {
+    font-size: 14px;
+    color: #555;
+    margin: 0;
+}
+.part-price {
+    font-size: 15px;
+    color: #222;
+    margin: 0;
+}

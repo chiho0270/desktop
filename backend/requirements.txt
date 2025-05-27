@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+pydantic
+mysql-connector-python
+requests
+beautifulsoup4
+celery[redis]
+celery

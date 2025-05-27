@@ -1,0 +1,42 @@
+.header-and-nav h1 {
+  font-size: 28px; /* 제목 크기 */
+  margin-top: 0; /* 위쪽 여백 제거 */
+  padding-top: 5px; /* 상단 패딩 추가 (필요 시) */
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.layout-container {
+  display: flex; /* flexbox 사용 */
+  flex-direction: row; /* 가로로 배치 */
+}
+
+.header-and-nav {
+  position: fixed; /* 고정 위치 */
+  top: 0;
+  left: 0;
+  width: 18%; /* 네비게이션 바 너비 */
+  height: 80vh; /* 전체 화면 높이 */
+  display: flex;
+  flex-direction: column; /* 내부 콘텐츠 세로 배치 */
+}
+  
+.content-container {
+  flex: 1;
+  margin-left: 5%; /* 네비게이션 바 너비만큼 여백 */
+  padding: 10px; /* 내부 여백 */
+  min-height: 97vh;
+  max-width: 100%;
+  overflow-y: auto; /* 세로 스크롤 활성화 */
+  /* 필요시 아래도 추가 */
+  /* height: 100vh; */
+}
+  
+.main {
+  padding: 30px; /* 콘텐츠 내부 여백 */
+  max-width: 800px; /* 최대 너비 */
+}
