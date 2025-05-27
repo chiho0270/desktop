@@ -16,7 +16,11 @@ function PostCreate() {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     setImage(file);
-    // 미리보기 URL 생성하지 않음!
+    if (file) {
+      setPreview(URL.createObjectURL(file));
+    } else {
+      setPreview(null);
+    }
   };
 
   // 내용 앞 60자 요약 생성
@@ -25,22 +29,37 @@ function PostCreate() {
     return summary.length === 60 ? summary + "..." : summary;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
     if (!title.trim() || !content.trim()) {
       setError('제목과 내용을 모두 입력해주세요.');
       return;
     }
-    // 실제 서버 전송 로직 (FormData 활용)
-    // const formData = new FormData();
-    // formData.append('title', title);
-    // formData.append('content', content);
-    // formData.append('summary', getSummary(content));
-    // if (image) formData.append('image', image);
-    // await axios.post('/api/posts', formData);
+    try {
+      const formData = new FormData();
+      formData.append('title', title);
+      formData.append('content', content);
+      formData.append('summary', getSummary(content));
+      if (image) formData.append('image', image);
+      // 사용자 정보 (예: email) 추가 (옵션)
+      const user = JSON.parse(localStorage.getItem('user'));
+      if (user && user.email) formData.append('email', user.email);
 
-    alert('글이 성공적으로 작성되었습니다!\n\n요약: ' + getSummary(content));
-    navigate('/dashboard');
+      const response = await fetch('http://localhost:8000/post/create', {
+        method: 'POST',
+        body: formData
+      });
+      if (!response.ok) {
+        const data = await response.json();
+        setError(data.detail || '글 작성 실패');
+        return;
+      }
+      alert('글이 성공적으로 작성되었습니다!');
+      navigate('/dashboard');
+    } catch (err) {
+      setError('네트워크 오류');
+    }
   };
 
   return (
@@ -77,6 +96,11 @@ function PostCreate() {
           onChange={handleImageChange}
           className="post-input"
         />
+        {preview && (
+          <div className="image-preview">
+            <img src={preview} alt="미리보기" style={{ maxWidth: '200px', marginTop: '10px' }} />
+          </div>
+        )}
 
         <Button variant="primary" type="submit" className="submit-button">
           작성 완료

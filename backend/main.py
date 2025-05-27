@@ -1,11 +1,15 @@
 import asyncio
 import hashlib
-from fastapi import FastAPI, HTTPException, Depends, Body
+from fastapi import FastAPI, HTTPException, Depends, Body, UploadFile, File, Form
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from backend.db.connect import create_connection, close_connection
 from backend.db.routers import fetch_all_data, fetch_data_with_condition
 from backend.scheduler.danawaparser import DanawaParser
-from fastapi.middleware.cors import CORSMiddleware
+from datetime import datetime
+import os
+from typing import Optional, List
 
 ALLOWED_TABLES = {
     "parts": {"product_id", "part_type", "manufacturer", "model_name", "price", "launch_price"},
@@ -31,6 +35,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "uploads")
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+# Serve uploaded files
+app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 
 ### 다나와 파서
 async def run_parser_periodically():
@@ -154,3 +164,95 @@ def update_password(data: UpdatePasswordRequest):
         raise HTTPException(status_code=500, detail="비밀번호 변경 실패")
     close_connection(connection)
     return {"message": "비밀번호가 성공적으로 변경되었습니다."}
+
+### 게시물 작성
+@app.post("/post/create")
+def create_post(
+    title: str = Form(...),
+    content: str = Form(...),
+    summary: str = Form(...),
+    email: str = Form(...),
+    image: Optional[UploadFile] = File(None)
+):
+    connection = create_connection()
+    if not connection:
+        raise HTTPException(status_code=500, detail="연결 실패")
+    # 사용자 확인
+    user = fetch_data_with_condition(connection, "users", "email", email)
+    if not user:
+        close_connection(connection)
+        raise HTTPException(status_code=404, detail="사용자를 찾을 수 없습니다.")
+    # 이미지 저장
+    photo_url = None
+    if image:
+        filename = f"{datetime.now().strftime('%Y%m%d%H%M%S')}_{image.filename}"
+        file_path = os.path.join(UPLOAD_DIR, filename)
+        with open(file_path, "wb") as f:
+            f.write(image.file.read())
+        photo_url = f"/uploads/{filename}"
+    # DB 저장
+    cursor = connection.cursor()
+    try:
+        cursor.execute(
+            "INSERT INTO posts (user_id, title, content, photo_url, created_at) VALUES (%s, %s, %s, %s, NOW())",
+            (user["user_id"], title, content, photo_url)
+        )
+        connection.commit()
+    except Exception as e:
+        print("Post create error:", e)
+        close_connection(connection)
+        raise HTTPException(status_code=500, detail="글 작성 실패")
+    close_connection(connection)
+    return {"message": "글이 성공적으로 작성되었습니다."}
+
+# 게시물 상세 조회
+@app.get("/post/{post_id}")
+def get_post_detail(post_id: int):
+    connection = create_connection()
+    if not connection:
+        raise HTTPException(status_code=500, detail="연결 실패")
+    cursor = connection.cursor(dictionary=True)
+    try:
+        cursor.execute(
+            """
+            SELECT p.post_id, p.title, p.content, p.photo_url, p.created_at, u.name as user_name, u.email
+            FROM posts p
+            JOIN users u ON p.user_id = u.user_id
+            WHERE p.post_id = %s
+            """,
+            (post_id,)
+        )
+        post = cursor.fetchone()
+        if not post:
+            close_connection(connection)
+            raise HTTPException(status_code=404, detail="게시물을 찾을 수 없습니다.")
+    except Exception as e:
+        print("Post detail error:", e)
+        close_connection(connection)
+        raise HTTPException(status_code=500, detail="게시물 조회 실패")
+    close_connection(connection)
+    return post
+
+# 게시물 목록 조회 (최신순)
+@app.get("/posts")
+def get_posts():
+    connection = create_connection()
+    if not connection:
+        raise HTTPException(status_code=500, detail="연결 실패")
+    cursor = connection.cursor(dictionary=True)
+    try:
+        cursor.execute(
+            """
+            SELECT p.post_id, p.title, LEFT(p.content, 60) as summary, p.photo_url, p.created_at, u.name as user_name
+            FROM posts p
+            JOIN users u ON p.user_id = u.user_id
+            ORDER BY p.created_at DESC
+            """
+        )
+        posts = cursor.fetchall()
+    except Exception as e:
+        print("Posts list error:", e)
+        close_connection(connection)
+        raise HTTPException(status_code=500, detail="게시물 목록 조회 실패")
+    close_connection(connection)
+    return posts

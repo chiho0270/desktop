@@ -23,6 +23,27 @@ function Home() {
     },
   });
 
+  // 최근 게시물 가져오기
+  const [recentPosts, setRecentPosts] = React.useState([]);
+  const [postLoading, setPostLoading] = React.useState(true);
+  const [postError, setPostError] = React.useState(null);
+
+  React.useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const res = await fetch('http://localhost:8000/posts');
+        if (!res.ok) throw new Error('게시물 목록을 불러오지 못했습니다.');
+        const data = await res.json();
+        setRecentPosts(data.slice(0, 4));
+      } catch (err) {
+        setPostError(err.message);
+      } finally {
+        setPostLoading(false);
+      }
+    };
+    fetchPosts();
+  }, []);
+
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
 
@@ -32,6 +53,23 @@ function Home() {
         <Link to="/dashboard">Dashboard</Link>
       </h2>
       <p>Notice Board...</p>
+      {postLoading ? (
+        <div>Loading...</div>
+      ) : postError ? (
+        <div>Error: {postError}</div>
+      ) : (
+        <div className="recent-posts-row">
+          {recentPosts.map((post) => (
+            <Link to={`/dashboard/posts/${post.post_id}`} key={post.post_id} className="recent-post-card">
+              {post.photo_url && <img src={`http://localhost:8000${post.photo_url}`} alt="썸네일" className="recent-post-img" />}
+              <div className="recent-post-title">{post.title}</div>
+              <div className="recent-post-summary">{post.summary}</div>
+              <div className="recent-post-meta">by {post.user_name} | {new Date(post.created_at).toLocaleString()}</div>
+            </Link>
+          ))}
+        </div>
+      )}
+
       <div className="dashboard-content">
         {cards.map((card, index) => (
           <Card key={index} className="card">

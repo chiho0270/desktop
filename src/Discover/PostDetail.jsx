@@ -12,28 +12,19 @@ function PostDetail() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // 실제 API 호출 예시 (주석 해제 시 사용)
-    // fetch(`/api/posts/${id}`)
-    //   .then(res => res.json())
-    //   .then(data => {
-    //     setPost(data);
-    //     setLoading(false);
-    //   })
-    //   .catch(err => {
-    //     setError(err.message);
-    //     setLoading(false);
-    //   });
-
-    // 임시 예시 데이터 (API 없이도 결과 확인 가능)
-    const examplePost = {
-      id: id,
-      title: "예시 글 제목",
-      summary: "예시 요약",
-      content: "이것은 예시 글 내용입니다. 상세 내용을 여기에 표시합니다.",
-      image: "https://example.com/example-image.jpg"
+    const fetchPost = async () => {
+      try {
+        const res = await fetch(`http://localhost:8000/post/${id}`);
+        if (!res.ok) throw new Error('게시물을 불러오지 못했습니다.');
+        const data = await res.json();
+        setPost(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
     };
-    setPost(examplePost);
-    setLoading(false);
+    fetchPost();
   }, [id]);
 
   if (loading) return <div>Loading...</div>;
@@ -46,7 +37,8 @@ function PostDetail() {
         뒤로가기
       </Button>
       <h2>{post.title}</h2>
-      {post.image && <img src={post.image} alt={post.title} className="post-image" />}
+      {post.photo_url && <img src={`http://localhost:8000${post.photo_url}`} alt={post.title} className="post-image" />}
+      <div className="post-meta">by {post.user_name} | {new Date(post.created_at).toLocaleString()}</div>
       <p>{post.content}</p>
     </div>
   );
