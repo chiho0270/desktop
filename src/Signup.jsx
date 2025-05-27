@@ -5,16 +5,35 @@ function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [name, setName] = useState('');
+  const [error, setError] = useState('');
 
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
+    setError('');
     if (password !== confirmPassword) {
-      alert('Passwords do not match');
+      setError('Passwords do not match');
       return;
     }
-    console.log('Email:', email);
-    console.log('Password:', password);
-    // 회원가입 로직 추가
+    try {
+      const response = await fetch('http://localhost:8000/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, name }),
+      });
+      if (!response.ok) {
+        const data = await response.json();
+        setError(data.detail || 'Signup failed');
+        return;
+      }
+      alert('Signup successful!');
+      setEmail('');
+      setPassword('');
+      setConfirmPassword('');
+      setName('');
+    } catch (err) {
+      setError('Network error');
+    }
   };
 
   return (
@@ -22,6 +41,13 @@ function Signup() {
       <div className="auth-container">
         <h2>Signup</h2>
         <form className="auth-form" onSubmit={handleSignup}>
+          <input
+            type="text"
+            placeholder="Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
           <input
             type="email"
             placeholder="Email"
@@ -44,6 +70,7 @@ function Signup() {
             required
           />
           <button type="submit" className="auth-button">Signup</button>
+          {error && <div className="auth-error">{error}</div>}
         </form>
       </div>
     </div>

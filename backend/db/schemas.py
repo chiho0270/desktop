@@ -1,71 +1,106 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
+from typing import Optional, Literal
+from decimal import Decimal
+from datetime import datetime
+
+class Part(BaseModel):
+    product_id: Optional[int]
+    part_type: Literal['cpu', 'mainboard', 'ram', 'ssd', 'vga']
+    manufacturer: str
+    model_name: str
+    price: Decimal
+    launch_price: Optional[Decimal] = None
 
 class CPU(BaseModel):
-    CPU_ID: int
+    product_id: Optional[int]
     model_name: str
     manufacturer: str
-    core_count: int
-    thread_count: int
-    base_clock: int
-    bost_clock: int
-    tdp: int
-    integrated_graphics: str
-    process_size: str
-    model_config = {"from_attributes": True}
+    core_count: Optional[int] = None
+    thread_count: Optional[int] = None
+    base_clock: Optional[Decimal] = None
+    bost_clock: Optional[Decimal] = None
+    tdp: Optional[int] = None
+    integrated_graphics: Optional[str] = None
+    process_size: Optional[str] = None
+    socket_type: Optional[str] = None
 
-class MAINBOARD(BaseModel):
-    MB_ID: int
-    model_name: str
-    manufacturer: str
-    chipset: str
-    cpu_socket: str
-    memory_type: str
-    mosfet: str
-    color: str
-    model_config = {"from_attributes": True}
+class Mainboard(BaseModel):
+    product_id: Optional[int]
+    model_name: Optional[str] = None
+    manufacturer: Optional[str] = None
+    chipset: Optional[str] = None
+    cpu_socket: Optional[str] = None
+    memory_type: Optional[str] = None
+    mosfet: Optional[str] = None
+    color: Optional[str] = None
 
 class RAM(BaseModel):
-    RAM_ID: int
+    product_id: Optional[int]
     model_name: str
     manufacturer: str
-    clock: int
-    memory_type: str
-    memory_size: int
-    color: str
-    model_config = {"from_attributes": True}
+    clock: Optional[int] = None
+    memory_type: Optional[str] = None
+    memory_size: Optional[int] = None
+    color: Optional[str] = None
 
 class SSD(BaseModel):
-    SSD_ID: int
-    model_name: str
-    manufacturer: str
-    capacity: str
-    squential_read: int
-    squential_write: int
-    model_config = {"from_attributes": True}
+    product_id: Optional[int]
+    model_name: Optional[str] = None
+    manufacturer: Optional[str] = None
+    capacity: Optional[str] = None
+    sequential_read: Optional[int] = None
+    sequential_write: Optional[int] = None
 
 class VGA(BaseModel):
-    VGA_ID: int
-    model_name: str
-    manufacturer: str
-    memory_size: int
-    memory_type: str
-    base_clock_speed: int
-    boost_clock_speed: int
-    cuda_cores: int
-    tdp: int
-    color: str
-    model_config = {"from_attributes": True}
+    product_id: Optional[int]
+    model_name: Optional[str] = None
+    manufacturer: Optional[str] = None
+    memory_size: Optional[int] = None
+    memory_type: Optional[str] = None
+    base_clock_speed: Optional[int] = None
+    boost_clock_speed: Optional[int] = None
+    cuda_cores: Optional[int] = None
+    tdp: Optional[int] = None
+    color: Optional[str] = None
 
-class PRICE(BaseModel):
-    PRODUCT_ID: int
-    price: int
-    model_config = {"from_attributes": True}
+class PriceHistory(BaseModel):
+    history_id: Optional[int]
+    product_id: int
+    price: Decimal
+    recorded_at: Optional[datetime] = None
+    launch_price: Optional[Decimal] = None
 
-class USER(BaseModel):
-    __tablename__ = "user"
-    USER_ID: int
-    username: str
-    password: str
+class User(BaseModel):
+    user_id: Optional[int]
     email: str
-    phone_number: str
-    model_config = {"from_attributes": True}
+    password: str
+    name: str
+    created_at: Optional[datetime] = None
+
+class Post(BaseModel):
+    post_id: Optional[int]
+    user_id: int
+    title: str
+    content: Optional[str] = None
+    photo_url: Optional[str] = None
+    created_at: Optional[datetime] = None
+
+class WishlistItem(BaseModel):
+    wishlist_id: Optional[int]
+    user_id: int
+    product_id: int
+    added_at: Optional[datetime] = None
+
+class Estimate(BaseModel):
+    estimate_id: Optional[int]
+    user_id: int
+    created_at: Optional[datetime] = None
+    total_price: Decimal
+    budget: Optional[Decimal] = None
+    purpose: Optional[str] = None
+    preferred_brand: Optional[str] = None
+
+class EstimateItem(BaseModel):
+    item_id: Optional[int]
+    estimate_id: int
+    product_id: int
