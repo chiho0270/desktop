@@ -5,3 +5,6 @@ mysql-connector-python
 requests
 beautifulsoup4
 celery
+gradio
+google-genai
+google-generativeai

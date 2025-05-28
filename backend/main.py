@@ -341,3 +341,78 @@ def get_wishlist(email: str):
         raise HTTPException(status_code=500, detail="위시리스트 조회 실패")
     close_connection(connection)
     return items
+
+### 비교페이지
+# 제품 리스트 조회
+@app.get("/parts/list")
+def get_parts_list(category: Optional[str] = None):
+    connection = create_connection()
+    if not connection:
+        raise HTTPException(status_code=500, detail="연결 실패")
+    cursor = connection.cursor(dictionary=True)
+    try:
+        if category:
+            cursor.execute("SELECT * FROM parts WHERE part_type = %s", (category,))
+        else:
+            cursor.execute("SELECT * FROM parts")
+        parts = cursor.fetchall()
+    except Exception as e:
+        print("Parts list error:", e)
+        close_connection(connection)
+        raise HTTPException(status_code=500, detail="부품 목록 조회 실패")
+    close_connection(connection)
+    return parts
+# 제품 상세 조회
+@app.get("/parts/detail")
+def get_part_detail(category: str, product_id: int):
+    if category not in ALLOWED_TABLES:
+        raise HTTPException(status_code=400, detail="잘못된 카테고리입니다.")
+    connection = create_connection()
+    if not connection:
+        raise HTTPException(status_code=500, detail="연결 실패")
+    cursor = connection.cursor(dictionary=True)
+    try:
+        # 각 테이블별로 필요한 필드만 선택
+        if category == "cpu":
+            cursor.execute(
+                "SELECT product_id, model_name, manufacturer, core_count, thread_count, base_clock, bost_clock, tdp, integrated_graphics, process_size, socket_type FROM cpu WHERE product_id = %s",
+                (product_id,)
+            )
+        elif category == "ram":
+            cursor.execute(
+                "SELECT product_id, model_name, manufacturer, clock, memory_type, memory_size, color FROM ram WHERE product_id = %s",
+                (product_id,)
+            )
+        elif category == "vga":
+            cursor.execute(
+                "SELECT product_id, model_name, manufacturer, memory_size, memory_type, base_clock_speed, boost_clock_speed, cuda_cores, tdp, color FROM vga WHERE product_id = %s",
+                (product_id,)
+            )
+        elif category == "mainboard":
+            cursor.execute(
+                "SELECT product_id, model_name, manufacturer, chipset, cpu_socket, memory_type, mosfet, color FROM mainboard WHERE product_id = %s",
+                (product_id,)
+            )
+        elif category == "ssd":
+            cursor.execute(
+                "SELECT product_id, model_name, manufacturer, capacity, sequential_read, sequential_write FROM ssd WHERE product_id = %s",
+                (product_id,)
+            )
+        elif category == "parts":
+            cursor.execute(
+                "SELECT product_id, part_type, manufacturer, model_name, price, launch_price FROM parts WHERE product_id = %s",
+                (product_id,)
+            )
+        else:
+            # 기본: 모든 필드
+            cursor.execute(f"SELECT * FROM {category} WHERE product_id = %s", (product_id,))
+        part = cursor.fetchone()
+        if not part:
+            close_connection(connection)
+            raise HTTPException(status_code=404, detail="부품을 찾을 수 없습니다.")
+    except Exception as e:
+        print("Part detail error:", e)
+        close_connection(connection)
+        raise HTTPException(status_code=500, detail="부품 상세 조회 실패")
+    close_connection(connection)
+    return part

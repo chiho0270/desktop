@@ -1,30 +1,43 @@
+import google.generativeai as genai
+import os
 import gradio as gr
-from chatbot.gemini import ask_gemini
 
+GEMINI_API_KEY = "AIzaSyBABSX9mx-EBIBmGH3fRfegdsJolM1Pscc"
+genai.configure(api_key=GEMINI_API_KEY)
+MODEL_TO_USE = 'models/gemini-2.0-flash-lite-001'
 
-# 챗봇 상태 관리용 함수
+try:
+    model = genai.GenerativeModel(MODEL_TO_USE)
+    print(f"'{MODEL_TO_USE}' 모델 로딩 성공 ")
+except Exception as e:
+    print(f"오류: 모델 로딩 실패 . 모델 이름 '{MODEL_TO_USE}'을 확인해 주세요.")
+    print(f"오류 내용: {e}")
+    exit()
+
+def ask_gemini(question):
+    try:
+        gemini_response = model.generate_content(question)
+        return gemini_response.text
+    except Exception as e:
+        return f"Gemini API 오류: {e}"
+
 def respond(message, history, state):
     history = history or []
     state = state or {"step": 0, "answers": {}}
-
-    # 사용자가 입력하면 (message, None) 추가
     history.append((message, None))
-
-    # Gemini API 호출
     bot_reply = ask_gemini(message)
     history[-1] = (message, bot_reply)
     return "", history, state
 
-# --- 그라디오 인터페이스 설정 부분 ---
 with gr.Blocks(theme=gr.themes.Soft(), fill_height=True) as demo:
     gr.Markdown("""
     <h3 style='margin-bottom: 0;'>UPsetUP 챗봇</h3>
     """)
     chatbot = gr.Chatbot(
-        elem_id="chatbot",         # 반드시 elem_id 지정!
-        height=600,               # height=None로 두어야 CSS 적용됨
+        elem_id="chatbot",
+        height=600,
         bubble_full_width=False,
-        avatar_images=("https://cdn-icons-png.flaticon.com/512/1946/1946429.png", None), 
+        avatar_images=("https://cdn-icons-png.flaticon.com/512/1946/1946429.png", None),
         show_copy_button=True
     )
     with gr.Row():
@@ -34,15 +47,8 @@ with gr.Blocks(theme=gr.themes.Soft(), fill_height=True) as demo:
             scale=8
         )
         clear = gr.Button("초기화", scale=1)
-
-    # 상태(state) 변수 추가 - 대화의 현재 상태를 저장
-    state = gr.State({"step": 0, "answers": {}}) # 초기 상태 설정!
-
-    # 메시지 입력 시 respond 함수 호출
+    state = gr.State({"step": 0, "answers": {}})
     msg.submit(respond, [msg, chatbot, state], [msg, chatbot, state])
-
-    # 초기화 버튼 클릭 시 상태 초기화
     clear.click(lambda: ("", [], {"step": 0, "answers": {}}), None, [msg, chatbot, state])
 
-# 그라디오 앱 실행
 demo.launch(share=True)

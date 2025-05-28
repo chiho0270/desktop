@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './Auth.css';
+import { redirect } from 'react-router-dom';
 
 function Signup() {
   const [email, setEmail] = useState('');
@@ -12,7 +13,7 @@ function Signup() {
     e.preventDefault();
     setError('');
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setError('패스워드 불일치치');
       return;
     }
     try {
@@ -23,14 +24,15 @@ function Signup() {
       });
       if (!response.ok) {
         const data = await response.json();
-        setError(data.detail || 'Signup failed');
+        setError(data.detail || '회원가입 실패패');
         return;
       }
-      alert('Signup successful!');
+      alert('회원가입 성공');
       setEmail('');
       setPassword('');
       setConfirmPassword('');
       setName('');
+      redirect('/login');
     } catch (err) {
       setError('Network error');
     }

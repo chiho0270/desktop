@@ -6,7 +6,7 @@ def create_connection():
             host='localhost',
             user='root',
             password='0207',
-            port='3307',
+            port='3306',
             database='desktop'
         )
         return connection
