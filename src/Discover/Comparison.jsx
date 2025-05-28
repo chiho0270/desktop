@@ -130,7 +130,7 @@ function Comparison() {
             <option value="">제품 1 선택</option>
             {partsDatabase.map(part => (
               <option key={part.product_id} value={part.product_id}>
-                {part.model_name} ({part.price || '-'})
+                ({part.manufacturer || '-'}) {part.model_name} 
               </option>
             ))}
           </select>
@@ -144,7 +144,7 @@ function Comparison() {
             <option value="">제품 2 선택</option>
             {partsDatabase.map(part => (
               <option key={part.product_id} value={part.product_id}>
-                {part.model_name} ({part.price || '-'})
+                ({part.manufacturer || '-'}) {part.model_name} 
               </option>
             ))}
           </select>

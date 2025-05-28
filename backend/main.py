@@ -50,9 +50,9 @@ async def run_parser_periodically():
         if not connection:
             print("Database connection failed")
         else:
-            #parser = DanawaParser()
-            #for product in parser.productID:
-            #    await parser.parse_product(product["url"], product["id"], connection)
+            parser = DanawaParser()
+            for product in parser.productID:
+                await parser.parse_product(product["url"], product["id"], connection)
             close_connection(connection)
             print("Parser run completed.")
         await asyncio.sleep(86400)
