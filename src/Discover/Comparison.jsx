@@ -39,7 +39,7 @@ function Comparison() {
     if (category === 'cpu') backendCategory = 'cpu';
     else if (category === 'vga') backendCategory = 'vga';
     else if (category === 'ram') backendCategory = 'ram';
-    const res = await fetch(`http://localhost/parts/detail?category=${backendCategory}&product_id=${product_id}`);
+    const res = await fetch(`http://localhost:8000/parts/detail?category=${backendCategory}&product_id=${product_id}`);
     if (res.ok) {
       const detail = await res.json();
       let specs = {};
@@ -53,7 +53,8 @@ function Comparison() {
           '소비전력': detail.tdp,
           '내장그래픽': detail.integrated_graphics,
           '공정 크기': detail.process_size,
-          '소켓 타입': detail.socket_type
+          '소켓 타입': detail.socket_type,
+          '모델이름': detail.model_name // 추가: name이 undefined일 때 대비
         };
       } else if (category === 'vga') {
         specs = {
@@ -75,7 +76,7 @@ function Comparison() {
           '색상': detail.color
         };
       }
-      setProduct({ id: detail.product_id, name: detail.model_name, specs });
+      setProduct({ id: detail.product_id, name: detail.model_name || detail.name, specs });
     } else {
       setProduct(null);
     }
