@@ -1,12 +1,18 @@
-# React + Vite
+# UPsetUP
+본 프로젝트는 대구가톨릭대학교 산하 캡스톤디자인 구현을 수행한 소스코드를 정리한 것입니다.
+과제는 팀 프로젝트의 협업를 궁극적 목표로 삼아 진행하게 되었습니다.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 프로젝트 개요
++ 팀 이름 : 타요타요
++ 팀   장 : 이민혁
++ 팀   원 : 이치호 홍상은
 
-Currently, two official plugins are available:
+### 목적 및 필요성
+본 프로젝트는 1 가구당 1 컴퓨터는 필수인 세대가 되었으며, 그로인해 컴퓨터 하드웨어와 데스크탑의 시장이 확장되었습니다.
+그로인해, 컴퓨터 사양을 속여 판매하는 사람(일명 용팔이)이 늘어 사기수법이 나날이 발전해 가는 시장의 틈을 막고자 프로젝트를 제안하였습니다.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### 기술 구성
++ Front-end : React + Node.js(테스트 실행환경)
++ Back-end : FastAPI
++ DB : MySQL
++ API : Google Gemini + Gradio + RESTful API + DANAWA parsing
